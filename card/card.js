@@ -362,6 +362,14 @@
   const energy = (T) => `<span class="en" style="background:${T.c}">${T.icon}</span>`;
   const cost = (n, T) => energy(T) + '<span class="en cl">★</span>'.repeat(Math.max(0, n - 1));
 
+  // 칼로리·가격은 대략적인 추정치 (초콜릿 과자 약 5.1kcal/g, 아몬드류 5.4kcal/g)
+  const PREMIUM = new Set([6, 15, 16, 17, 19]);
+  function info(p) {
+    const kcal = Math.round((p.g * (p.top === 'almond' ? 5.4 : 5.1)) / 5) * 5;
+    const price = PREMIUM.has(p.id) ? 2000 : 1800;
+    return [['🔥', '칼로리', `${kcal}kcal`], ['💰', '가격', `${price.toLocaleString('ko-KR')}원`], ['⚖️', '중량', `${p.g}g`]];
+  }
+
   function cardHTML(p) {
     const T = TYPES[p.type];
     const ex = p.r === 'EX';
@@ -373,8 +381,8 @@
       </div>
       <div class="art">${artSVG(p)}</div>
       <div class="dexline">No.${pad(p.id)} ${p.name} 빼빼로 · ${T.n} 타입 · 중량 ${p.g}g</div>
-      <div class="moves">${p.moves.map((m) => `
-        <div class="move"><span class="cost">${cost(m[0], T)}</span><b>${m[1]}</b><span class="dmg">${m[2]}</span>${m[3] ? `<p>${m[3]}</p>` : ''}</div>`).join('')}
+      <div class="moves">${info(p).map(([icon, label, val]) => `
+        <div class="move"><span class="cost"><span class="en cl">${icon}</span></span><b>${label}</b><span class="dmg">${label === '중량' ? '' : '<small>약 </small>'}${val}</span></div>`).join('')}
       </div>
       <div class="stats"><span>약점 🔥×2</span><span>저항 ❄️-30</span><span>후퇴 ${p.retreat ? '★'.repeat(p.retreat) : '-'}</span></div>
       <div class="foot"><span class="rar">${RAR[p.r].mark}</span><span class="flv">${p.flavor}</span><span class="num">${pad(p.id)}/020</span></div>
@@ -446,8 +454,7 @@
       try { localStorage.setItem(DEX_KEY, JSON.stringify([...dex])); } catch (e) { /* 무시 */ }
       renderDex();
       $('#title').textContent = `${p.name} 빼빼로 등장!`;
-      say([`${p.name} 빼빼로를 발견했다!`, isNew ? `${RAR[p.r].label} 카드가 도감에 등록되었다!` : `${RAR[p.r].label} 카드를 또 만났다!`]);
-      $('#again').disabled = false;
+      say([`${p.name} 빼빼로를`, '얻었다!'], () => setTimeout(showChoice, 350));
       busy = false;
     }, 3300);
   }
@@ -460,12 +467,34 @@
     $('#sparkles').innerHTML = '';
     $('#title').textContent = '볼을 눌러 빼빼로를 뽑아보세요!';
     say(['볼 안에 무언가 들어 있다...', '볼을 눌러서 열어 보자!']);
-    $('#again').disabled = true;
   }
 
+  // ---------- 예 / 아니오 선택창 ----------
+  const choice = $('#choice');
+  const choiceOpen = () => !choice.classList.contains('hidden');
+  function pickOpt(i) { choice.querySelectorAll('button').forEach((b, k) => b.classList.toggle('on', k === i)); }
+  function showChoice() { if (!arena.classList.contains('revealed')) return; pickOpt(0); choice.classList.remove('hidden'); SFX.click(); }
+  function answer(yes) {
+    choice.classList.add('hidden');
+    SFX.click();
+    if (yes) { reset(); setTimeout(open, 450); }
+  }
+  choice.querySelectorAll('button').forEach((b, i) => {
+    b.addEventListener('pointerenter', () => pickOpt(i));
+    b.addEventListener('click', () => answer(i === 0));
+  });
+  document.addEventListener('keydown', (e) => {
+    if (!choiceOpen()) return;
+    const cur = choice.querySelector('.on') === choice.querySelectorAll('button')[0] ? 0 : 1;
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') { e.preventDefault(); pickOpt(1 - cur); SFX.click(); }
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); answer(cur === 0); }
+  });
+  // '아니오' 후 대화창을 누르면 다시 물어봄
+  $('#dialog').addEventListener('click', () => { if (!choiceOpen() && !typing) showChoice(); });
+
   // 게임 대화창: 한 글자씩 타이핑
-  let typing;
-  function say(lines) {
+  let typing = null;
+  function say(lines, done) {
     clearInterval(typing);
     const el = $('#dialogText');
     const text = lines.join('\n');
@@ -476,7 +505,7 @@
       i++;
       el.textContent = text.slice(0, i);
       if (i % 3 === 0 && text[i - 1] !== ' ') beep([[1200, 0, 0.025, 'square', 0.02]]);
-      if (i >= text.length) { clearInterval(typing); $('#caret').classList.add('show'); }
+      if (i >= text.length) { clearInterval(typing); typing = null; $('#caret').classList.add('show'); if (done) done(); }
     }, 40);
   }
 
@@ -503,7 +532,6 @@
   $('#cardWrap').addEventListener('pointerup', (e) => { if (e.pointerType !== 'mouse') onLeave(); });
 
   $('#ball').addEventListener('click', open);
-  $('#again').addEventListener('click', reset);
   $('#dexBtn').addEventListener('click', () => {
     SFX.click();
     $('#dex').classList.toggle('hidden');

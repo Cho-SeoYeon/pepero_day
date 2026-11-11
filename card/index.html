@@ -41,13 +41,19 @@
       <div class="sparkles" id="sparkles"></div>
     </div>
 
-    <div class="dialog" id="dialog">
-      <p id="dialogText"></p>
-      <span class="caret" id="caret">▼</span>
+    <div class="talk">
+      <div class="choice hidden" id="choice" role="menu" aria-label="다시 뽑으시겠습니까?">
+        <p class="q">다시 뽑으시겠습니까?</p>
+        <button type="button" role="menuitem" class="on">예</button>
+        <button type="button" role="menuitem">아니오</button>
+      </div>
+      <div class="dialog" id="dialog">
+        <p id="dialogText"></p>
+        <span class="caret" id="caret">▼</span>
+      </div>
     </div>
 
     <div class="actions" id="actions">
-      <button class="btn" id="again" type="button" disabled>🔄 한 번 더 열기</button>
       <button class="btn ghost" id="dexBtn" type="button">📖 도감 <span id="dexCount">0/20</span></button>
     </div>
 

@@ -280,6 +280,41 @@ h1 { margin-top: 16px; font-size: 21px; font-weight: 700; text-shadow: 2px 0 #ff
 .move p { grid-column: 1 / -1; font-size: 0.62em; line-height: 1.35; margin-top: 0.2em; opacity: 0.85; }
 .move + .move { border-top: 1px solid rgba(43, 33, 24, 0.18); padding-top: 0.35em; }
 .move p { margin-top: 0.1em !important; }
+.move .dmg small { font-size: 0.55em; font-weight: 700; opacity: 0.7; }
+.move { grid-template-columns: 2em 1fr auto !important; }
+
+/* ---------- 예/아니오 선택창 ---------- */
+.talk { position: relative; width: 100%; }
+.actions { grid-template-columns: 1fr !important; }
+.choice {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 2px);
+  z-index: 7;
+  min-width: 150px;
+  padding: 10px 14px 10px 12px;
+  background: #fff;
+  border: 3px solid #222;
+  box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 5px #222, 4px 4px 0 rgba(0, 0, 0, 0.25);
+  font-family: 'Galmuri11', 'Pretendard', monospace;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+.choice .q { font-size: 13px; color: #222; padding: 2px 4px 6px; border-bottom: 2px dotted #bbb; margin-bottom: 4px; white-space: nowrap; }
+.choice button {
+  border: 0;
+  background: none;
+  font-family: inherit;
+  font-size: 16px;
+  color: #222;
+  text-align: left;
+  padding: 5px 4px 5px 22px;
+  position: relative;
+}
+.choice button::before { content: '▶'; position: absolute; left: 4px; font-size: 12px; top: 8px; visibility: hidden; }
+.choice button.on::before { visibility: visible; animation: caret 0.8s steps(2) infinite; }
+.dialog { cursor: pointer; }
 
 /* ---------- 게임 대화창 ---------- */
 .dialog {
