@@ -9,6 +9,7 @@
   <meta property="og:description" content="볼을 눌러 랜덤 빼빼로 카드를 뽑아보세요!">
   <meta name="theme-color" content="#fdf5d3">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri@2.40.3/dist/galmuri.css">
   <link rel="stylesheet" href="card.css">
 </head>
 <body>
@@ -25,10 +26,8 @@
       <div class="rays"></div>
       <div class="flash"></div>
       <button class="ball" id="ball" type="button" aria-label="볼 열기">
-        <span class="ball-top"></span>
-        <span class="ball-bottom"></span>
-        <span class="ball-band"></span>
-        <span class="ball-btn">♥</span>
+        <span class="ball-top" id="ballTop"></span>
+        <span class="ball-bottom" id="ballBottom"></span>
       </button>
       <p class="tap" id="tap">TAP!</p>
       <div class="card-wrap" id="cardWrap">

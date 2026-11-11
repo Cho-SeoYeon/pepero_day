@@ -123,6 +123,38 @@
     b.innerHTML = `${soundOn ? '🔊' : '🔈'} 사운드 <b>${soundOn ? 'ON' : 'OFF'}</b>`;
   }
 
+  // ---------- 픽셀 볼 ----------
+  const BALL = [
+    '.....KKKKKK.....',
+    '...KKRRRRRRKK...',
+    '..KRRRRRRRRRRK..',
+    '.KRHHRRRRRRRRrK.',
+    '.KRHRRRRRRRRRrK.',
+    'KRRRRRRRRRRRRRrK',
+    'KRRRRKKKKKKRRrrK',
+    'KKKKKKWWWWKKKKKK',
+    'KKKKKKWWgWKKKKKK',
+    'KWWWWKKKKKKWWWgK',
+    'KWWWWWWWWWWWWWgK',
+    '.KWWWWWWWWWWWgK.',
+    '.KWWWWWWWWWWggK.',
+    '..KWWWWWWWWggK..',
+    '...KKggggggKK...',
+    '.....KKKKKK.....',
+  ];
+  const PX = { K: '#1a1a1a', R: '#e3242b', r: '#a8141a', H: '#ffffff', W: '#ffffff', g: '#c9c9c9' };
+  function pixelSVG(rows, offset) {
+    let s = `<svg viewBox="0 0 16 8" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">`;
+    rows.forEach((row, y) => [...row].forEach((ch, x) => {
+      if (ch === '.') return;
+      const btn = (y + offset === 7 || y + offset === 8) && x >= 6 && x <= 9 && ch !== 'K';
+      s += `<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${PX[ch]}"${btn ? ' class="btn"' : ''}/>`;
+    }));
+    return s + '</svg>';
+  }
+  $('#ballTop').innerHTML = pixelSVG(BALL.slice(0, 8), 0);
+  $('#ballBottom').innerHTML = pixelSVG(BALL.slice(8), 8);
+
   // ---------- 빼빼로 그리기 ----------
   function toppings(p, W, c, r) {
     let s = '';
@@ -253,8 +285,7 @@
       const a = Math.random() * Math.PI * 2;
       const d = 120 + Math.random() * 120;
       const el = document.createElement('i');
-      el.textContent = Math.random() > 0.4 ? '✦' : '✧';
-      el.style.cssText = `--dx:${(Math.cos(a) * d).toFixed(0)}px;--dy:${(Math.sin(a) * d).toFixed(0)}px;--s:${(12 + Math.random() * 18).toFixed(0)}px;--c:${colors[i % colors.length]};--d:${(Math.random() * 0.4).toFixed(2)}s`;
+      el.style.cssText = `--dx:${(Math.cos(a) * d).toFixed(0)}px;--dy:${(Math.sin(a) * d).toFixed(0)}px;--s:${3 + Math.floor(Math.random() * 3)}px;--c:${colors[i % colors.length]};--d:${(Math.random() * 0.4).toFixed(2)}s`;
       box.appendChild(el);
     }
   }

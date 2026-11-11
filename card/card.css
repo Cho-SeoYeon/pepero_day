@@ -17,11 +17,19 @@ html, body {
 }
 body {
   min-height: 100dvh;
-  background-color: var(--bg);
-  background-image: radial-gradient(var(--dot) 3px, transparent 3.5px);
-  background-size: 22px 22px;
-  padding: 14px 16px 48px;
+  background: conic-gradient(from 270deg at 4px 4px, var(--dot) 25%, transparent 0) 0 0 / 20px 20px, var(--bg);
+  padding: 18px 16px 48px;
 }
+/* 픽셀 UI: 모서리가 깎인 도트 테두리 */
+.badge, .sound, .to, .btn, .dex {
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow:
+    0 -3px 0 var(--ink), 0 3px 0 var(--ink), -3px 0 0 var(--ink), 3px 0 0 var(--ink),
+    3px 6px 0 rgba(43, 33, 24, 0.35), 6px 3px 0 rgba(43, 33, 24, 0.35) !important;
+  font-family: 'Galmuri11', 'Pretendard', monospace;
+}
+.badge, .sound, .to { margin: 3px; }
 button { font: inherit; color: inherit; cursor: pointer; }
 .hidden { display: none !important; }
 
@@ -45,7 +53,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 /* ---------- stage ---------- */
 .stage { max-width: 420px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: 26px; }
 .to { font-size: 14px; font-weight: 700; color: #8a5a32; background: #fff8e0; border: 1.5px dashed #e8b98a; padding: 6px 14px; border-radius: 999px; }
-h1 { margin-top: 14px; font-size: 22px; font-weight: 800; color: var(--brown); letter-spacing: -0.5px; word-break: keep-all; }
+h1, .tap, .result, .dex-title, .link, .back span { font-family: 'Galmuri11', 'Pretendard', monospace; }
+.to { font-size: 12px; }
+h1 { margin-top: 16px; font-size: 21px; font-weight: 700; text-shadow: 2px 2px 0 #f3d98a; color: var(--brown); letter-spacing: -0.5px; word-break: keep-all; }
 
 .arena {
   position: relative;
@@ -63,58 +73,23 @@ h1 { margin-top: 14px; font-size: 22px; font-weight: 800; color: var(--brown); l
   border: 0;
   background: none;
   z-index: 3;
-  animation: bob 2.4s ease-in-out infinite;
+  animation: bob 1s steps(1) infinite;
   transform-origin: 50% 90%;
+  image-rendering: pixelated;
 }
-.ball::after { /* 그림자 */
+.ball::after { /* 픽셀 그림자 */
   content: '';
   position: absolute;
-  left: 20%; right: 20%; bottom: -26px;
-  height: 14px;
-  border-radius: 50%;
-  background: rgba(43, 33, 24, 0.15);
+  left: 25%; right: 25%; bottom: -22px;
+  height: 10px;
+  background: rgba(43, 33, 24, 0.18);
+  box-shadow: -10px 0 0 -0px rgba(43, 33, 24, 0.09), 10px 0 0 rgba(43, 33, 24, 0.09);
 }
-.ball span { position: absolute; transition: transform 0.6s cubic-bezier(0.3, 0.6, 0.3, 1), opacity 0.6s; }
-.ball-top {
-  inset: 0 0 50% 0;
-  border-radius: 85px 85px 0 0;
-  border: 4px solid var(--ink);
-  border-bottom: 0;
-  background:
-    radial-gradient(circle at 30% 38%, rgba(255, 255, 255, 0.85) 0 9%, transparent 10%),
-    radial-gradient(circle at 42% 22%, rgba(255, 255, 255, 0.6) 0 4%, transparent 5%),
-    linear-gradient(160deg, #ff9dbd, #e5537b);
-}
-.ball-bottom {
-  inset: 50% 0 0 0;
-  border-radius: 0 0 85px 85px;
-  border: 4px solid var(--ink);
-  border-top: 0;
-  background: linear-gradient(#fff8e8, #ecd7ab);
-}
-.ball-band {
-  left: 1px; right: 1px; top: 50%;
-  height: 18px;
-  margin-top: -9px;
-  background: #6b3f2a;
-  border-top: 4px solid var(--ink);
-  border-bottom: 4px solid var(--ink);
-}
-.ball-btn {
-  left: 50%; top: 50%;
-  width: 54px; height: 54px;
-  margin: -27px 0 0 -27px;
-  border-radius: 50%;
-  background: #fff8e8;
-  border: 4px solid var(--ink);
-  box-shadow: inset 0 0 0 5px #f1dfba;
-  display: grid;
-  place-items: center;
-  color: var(--red);
-  font-size: 22px;
-  line-height: 1;
-}
-@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.ball span { position: absolute; left: 0; right: 0; height: 50%; transition: transform 0.6s cubic-bezier(0.3, 0.6, 0.3, 1), opacity 0.6s; }
+.ball span svg { width: 100%; height: 100%; display: block; }
+.ball-top { top: 0; }
+.ball-bottom { bottom: 0; }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 .tap {
   position: absolute;
   left: 0; right: 0; top: calc(50% + 110px);
@@ -126,8 +101,8 @@ h1 { margin-top: 14px; font-size: 22px; font-weight: 800; color: var(--brown); l
 }
 @keyframes blink { 50% { opacity: 0; } }
 
-.shaking .ball { animation: shake 1.5s ease-in-out; }
-.shaking .ball-btn { animation: glow 0.5s ease-in-out infinite; }
+.shaking .ball { animation: shake 1.5s steps(1); }
+.shaking .btn { animation: glow 0.5s steps(1) infinite; }
 .shaking .tap, .opening .tap { opacity: 0; animation: none; }
 @keyframes shake {
   0%, 30%, 40%, 70%, 100% { transform: rotate(0); }
@@ -136,13 +111,12 @@ h1 { margin-top: 14px; font-size: 22px; font-weight: 800; color: var(--brown); l
   80% { transform: rotate(-10deg); }
   90% { transform: rotate(8deg); }
 }
-@keyframes glow { 50% { background: #ffe066; color: #fff; } }
+@keyframes glow { 50% { fill: #ff4040; } }
 
 .opening .ball { animation: none; pointer-events: none; }
 .opening .ball::after { opacity: 0; }
-.opening .ball-top { transform: translateY(-110px) rotate(-35deg); opacity: 0; }
+.opening .ball-top { transform: translateY(-110px) rotate(-30deg); opacity: 0; }
 .opening .ball-bottom { transform: translateY(90px) rotate(10deg); opacity: 0; }
-.opening .ball-band, .opening .ball-btn { transform: scale(1.8); opacity: 0; }
 
 .flash {
   position: absolute;
@@ -343,10 +317,10 @@ h1 { margin-top: 14px; font-size: 22px; font-weight: 800; color: var(--brown); l
 .sparkles { position: absolute; left: 50%; top: 50%; z-index: 6; pointer-events: none; }
 .sparkles i {
   position: absolute;
-  font-style: normal;
-  font-size: var(--s);
-  color: var(--c);
-  text-shadow: 0 0 6px #fff;
+  width: var(--s);
+  height: var(--s);
+  background: var(--c);
+  box-shadow: var(--s) 0 var(--c), calc(var(--s) * -1) 0 var(--c), 0 var(--s) var(--c), 0 calc(var(--s) * -1) var(--c);
   animation: fly 1.4s cubic-bezier(0.1, 0.7, 0.3, 1) forwards;
   animation-delay: var(--d);
   opacity: 0;
