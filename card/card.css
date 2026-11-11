@@ -5,9 +5,25 @@
   --brown: #4a2c17;
   --sub: #7a6650;
   --red: #e5534b;
-  --cw: min(320px, 86vw);
-  --ch: calc(var(--cw) * 1.397);
+  /* 카드 크기: 화면 너비와 높이 중 작은 쪽에 맞춰서 한 화면 안에 다 들어가게 */
+  --ch: min(calc(min(320px, 86vw) * 1.397), calc(100vh - 340px));
+  --cw: calc(var(--ch) / 1.397);
 }
+@supports (height: 100dvh) {
+  :root { --ch: min(calc(min(320px, 86vw) * 1.397), calc(100dvh - 340px)); }
+}
+
+/* ---------- 한 화면 레이아웃 ---------- */
+body { padding: 10px 12px calc(10px + env(safe-area-inset-bottom)) !important; display: flex; flex-direction: column; }
+.stage { padding-top: 10px !important; width: 100%; }
+.to { font-size: 11px !important; padding: 4px 10px !important; }
+h1 { margin-top: 10px !important; font-size: 18px !important; }
+.arena { height: calc(var(--ch) + 14px) !important; margin-top: 6px !important; }
+.tap { top: calc(50% + 100px) !important; }
+.talk { margin-top: 2px; }
+.dialog { margin-top: 6px !important; min-height: 56px !important; padding: 10px 14px 12px !important; font-size: 14px !important; line-height: 1.65 !important; }
+.actions { margin-top: 10px !important; }
+.actions .btn { padding: 10px 8px; font-size: 14px; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
   color: var(--ink);

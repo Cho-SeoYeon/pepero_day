@@ -454,7 +454,7 @@
       try { localStorage.setItem(DEX_KEY, JSON.stringify([...dex])); } catch (e) { /* 무시 */ }
       renderDex();
       $('#title').textContent = `${p.name} 빼빼로 등장!`;
-      say([`${p.name} 빼빼로를`, '얻었다!'], () => setTimeout(showChoice, 350));
+      say([`${p.name} 빼빼로를 얻었다!`], () => setTimeout(showChoice, 350));
       busy = false;
     }, 3300);
   }
@@ -466,7 +466,7 @@
     $('#tilt').style.cssText = '';
     $('#sparkles').innerHTML = '';
     $('#title').textContent = '볼을 눌러 빼빼로를 뽑아보세요!';
-    say(['볼 안에 무언가 들어 있다...', '볼을 눌러서 열어 보자!']);
+    say(['볼을 눌러서 열어 보자!']);
   }
 
   // ---------- 예 / 아니오 선택창 ----------
@@ -601,5 +601,5 @@
 
   renderSound();
   renderDex();
-  say(['볼 안에 무언가 들어 있다...', '볼을 눌러서 열어 보자!']);
+  say(['볼을 눌러서 열어 보자!']);
 })();
