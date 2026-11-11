@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>빼빼로 선물</title>
+  <meta name="description" content="당신을 위해 만든 달콤함. 천천히 열어보세요.">
+  <meta property="og:title" content="초콜릿 선물이 도착했어요 🎁">
+  <meta property="og:description" content="당신을 위해 만든 달콤함. 함께 온 편지도 기다리고 있어요.">
+  <meta name="theme-color" content="#fdf5d3">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <span class="badge">🍫 PEPERO DAY EDITION</span>
+    <button class="sound" id="sound" type="button" aria-pressed="true">🔊 사운드 <b>ON</b></button>
+  </header>
+
+  <!-- ============ 만들기 화면 ============ -->
+  <main id="maker" class="card hidden">
+    <h1><span class="spark">✨</span>나만의 빼빼로 만들기<span class="spark">✨</span></h1>
+    <p class="sub">빼빼로를 골라 하나씩 꾸미고, 편지를 써서 친구에게 보내보세요.</p>
+    <hr class="dash">
+
+    <div class="box">
+      <div class="box-inner">
+        <p class="box-label">★ MAKE YOUR OWN ★</p>
+        <div class="sticks" id="mTray"></div>
+        <p class="box-hint">👆 꾸밀 빼빼로를 골라주세요</p>
+      </div>
+    </div>
+
+    <div class="info" id="mInfo"></div>
+
+    <section class="controls" id="controls">
+      <div class="controls-head">
+        <strong id="selLabel">1번 빼빼로 꾸미기</strong>
+        <button class="chip" id="random" type="button">🎲 랜덤</button>
+      </div>
+      <p class="label">코팅</p>
+      <div class="swatches" id="coatSw"></div>
+      <p class="label">토핑</p>
+      <div class="chips" id="topCh"></div>
+      <p class="label">드리즐</p>
+      <div class="swatches" id="drzSw"></div>
+    </section>
+
+    <hr class="dash">
+
+    <section class="form">
+      <label class="label first" for="to">받는 사람</label>
+      <input id="to" maxlength="20" placeholder="예) 서아" autocomplete="off">
+      <label class="label" for="msg">편지</label>
+      <textarea id="msg" rows="5" maxlength="300" placeholder="하고 싶은 말을 적어주세요"></textarea>
+      <p class="count"><span id="msgCount">0</span>/300</p>
+      <label class="label" for="from">보내는 사람</label>
+      <input id="from" maxlength="20" placeholder="예) 너의 베프" autocomplete="off">
+    </section>
+
+    <button class="btn" id="make" type="button">💌 선물 링크 만들기</button>
+
+    <section class="result hidden" id="result">
+      <p class="label first">완성! 이 링크를 친구에게 보내주세요 🎉</p>
+      <input id="link" readonly>
+      <div class="row">
+        <button class="mini" id="copy" type="button">링크 복사</button>
+        <button class="mini" id="share" type="button">공유하기</button>
+        <button class="mini ghost" id="preview" type="button">미리보기</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ 받는 화면 ============ -->
+  <main id="viewer" class="card hidden">
+    <h1><span class="spark">✨</span>당신을 위해 만든 달콤함<span class="spark">✨</span></h1>
+    <p class="sub">천천히 살펴보세요. 함께 온 편지도 기다리고 있어요.</p>
+    <hr class="dash">
+
+    <div class="box gift" id="gift">
+      <div class="box-inner">
+        <p class="box-label">★ SPECIAL SWEET SELECTION ★</p>
+        <div class="sticks" id="vTray"></div>
+        <p class="box-hint">👇 빼빼로를 터치해 맛을 확인하세요!</p>
+      </div>
+      <button class="lid" id="lid" type="button" aria-label="선물 상자 열기">
+        <svg class="bow" viewBox="0 0 120 80" aria-hidden="true">
+          <path d="M60 40C44 10 10 12 14 32C18 52 46 48 60 40Z" fill="#e5534b" stroke="#2b2118" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M60 40C76 10 110 12 106 32C102 52 74 48 60 40Z" fill="#e5534b" stroke="#2b2118" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M56 46L44 76L52 70L57 78L60 48ZM64 46L76 76L68 70L63 78L60 48Z" fill="#e5534b" stroke="#2b2118" stroke-width="3" stroke-linejoin="round"/>
+          <rect x="50" y="30" width="20" height="20" rx="5" fill="#e5534b" stroke="#2b2118" stroke-width="3"/>
+        </svg>
+        <span class="lid-name" id="lidName">Yours</span>
+        <span class="lid-tap">TAP TO OPEN</span>
+      </button>
+    </div>
+
+    <div class="info" id="vInfo"></div>
+
+    <button class="btn reveal" id="openLetter" type="button">💌 편지 읽기</button>
+    <a class="again" href="./">나도 빼빼로 만들어 보내기 →</a>
+  </main>
+
+  <!-- ============ 편지 ============ -->
+  <div class="overlay" id="overlay" aria-hidden="true">
+    <article class="letter" role="dialog" aria-label="편지">
+      <div class="letter-head">
+        <p class="to">To. <span id="lTo"></span></p>
+        <div class="doodle" id="doodle"></div>
+        <div class="stamp" id="stamp"></div>
+      </div>
+      <p class="msg" id="lMsg"></p>
+      <p class="sign">Yours,<br><span id="lFrom"></span></p>
+    </article>
+    <button class="btn close" id="closeLetter" type="button">닫기</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
