@@ -312,6 +312,19 @@
     return { s, W, L };
   }
 
+  // img/peperos.png 안에서 각 제품 위치 [x, y, w, h] (id 기준)
+  const SPRITE = {
+    1: [128, 2, 42, 76], 2: [32, 6, 40, 66], 3: [232, 8, 32, 56], 4: [331, 5, 34, 67],
+    5: [33, 110, 38, 61], 6: [128, 103, 48, 73], 7: [230, 104, 42, 73], 8: [335, 110, 28, 58],
+    9: [32, 214, 34, 51], 10: [136, 214, 31, 53], 11: [229, 202, 43, 74], 12: [328, 204, 42, 73],
+    13: [25, 311, 47, 66], 14: [129, 304, 55, 72], 15: [212, 304, 72, 73], 16: [332, 312, 29, 65],
+    17: [27, 404, 45, 71], 18: [136, 412, 32, 52], 19: [232, 413, 32, 56], 20: [329, 408, 39, 64],
+  };
+  const spriteSVG = (id, x, y, w, h) => {
+    const [sx, sy, sw, sh] = SPRITE[id];
+    return `<svg x="${x}" y="${y}" width="${w}" height="${h}" viewBox="${sx} ${sy} ${sw} ${sh}" preserveAspectRatio="xMidYMid meet"><image href="img/peperos.png" width="399" height="501"/></svg>`;
+  };
+
   function artSVG(p) {
     const T = TYPES[p.type];
     const id = `a${p.id}`;
@@ -323,10 +336,13 @@
       const a = (Math.PI * 2 * i) / 18;
       s += `<path d="M150 90L${(150 + Math.cos(a - 0.06) * 260).toFixed(0)} ${(90 + Math.sin(a - 0.06) * 260).toFixed(0)}L${(150 + Math.cos(a + 0.06) * 260).toFixed(0)} ${(90 + Math.sin(a + 0.06) * 260).toFixed(0)}Z" fill="#fff" opacity=".22"/>`;
     }
-    [[96, 92, -30, 2], [204, 92, 28, 3], [150, 90, 4, 1]].forEach(([x, y, a, seed]) => {
-      const st = stickG(p, p.id * 31 + seed);
-      s += `<g transform="translate(${x} ${y}) rotate(${a}) scale(.72) translate(${-st.W / 2} ${-st.L / 2})">${st.s}</g>`;
-    });
+    // 실제 제품 이미지 (스프라이트에서 잘라서 표시)
+    const [, , bw, bh] = SPRITE[p.id];
+    const k = Math.min(150 / bh, 230 / bw);
+    const w = bw * k, h = bh * k;
+    s += `<g transform="translate(150 92) rotate(-5)">
+      <rect x="${-w / 2 + 5}" y="${-h / 2 + 6}" width="${w}" height="${h}" fill="#000" opacity=".22"/>
+      ${spriteSVG(p.id, -w / 2, -h / 2, w, h)}</g>`;
     const star = (x, y, k) => `<path d="M${x} ${y - k}Q${x} ${y} ${x + k} ${y}Q${x} ${y} ${x} ${y + k}Q${x} ${y} ${x - k} ${y}Q${x} ${y} ${x} ${y - k}Z" fill="#fff"/>`;
     s += star(40, 34, 9) + star(262, 140, 11) + star(254, 30, 6) + star(52, 150, 6);
     return s + '</g></svg>';
@@ -386,7 +402,7 @@
     $('#dexGrid').innerHTML = PEPEROS.map((p) => {
       if (!dex.has(p.id)) return `<div class="slot empty">?</div>`;
       const T = TYPES[p.type];
-      return `<div class="slot" style="--t1:${T.t1};--t2:${T.t2};${T.tx ? `--tx:${T.tx}` : ''}"><span class="ic">${T.icon}</span>${p.name}<span>${RAR[p.r].mark}</span></div>`;
+      return `<div class="slot" style="--t1:${T.t1};--t2:${T.t2};${T.tx ? `--tx:${T.tx}` : ''}"><svg class="mini" viewBox="0 0 40 50">${spriteSVG(p.id, 0, 0, 40, 50)}</svg>${p.name}<span>${RAR[p.r].mark}</span></div>`;
     }).join('');
   }
 
