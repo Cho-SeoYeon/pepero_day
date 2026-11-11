@@ -465,8 +465,8 @@
     arena.className = 'arena';
     $('#tilt').style.cssText = '';
     $('#sparkles').innerHTML = '';
-    $('#title').textContent = '볼을 눌러 빼빼로를 뽑아보세요!';
-    say(['볼을 눌러서 열어 보자!']);
+    $('#title').textContent = '몬스터볼을 눌러 빼빼로를 뽑아보세요!';
+    say(['몬스터볼을 눌러 보세요!']);
   }
 
   // ---------- 예 / 아니오 선택창 ----------
@@ -611,5 +611,5 @@
 
   renderSound();
   renderDex();
-  say(['볼을 눌러서 열어 보자!']);
+  say(['몬스터볼을 눌러 보세요!']);
 })();

@@ -6,11 +6,11 @@
   --sub: #7a6650;
   --red: #e5534b;
   /* 카드 크기: 화면 너비와 높이 중 작은 쪽에 맞춰서 한 화면 안에 다 들어가게 */
-  --ch: min(calc(min(320px, 86vw) * 1.397), calc(100vh - 290px));
+  --ch: min(calc(min(280px, 76vw) * 1.397), calc(100vh - 368px));
   --cw: calc(var(--ch) / 1.397);
 }
 @supports (height: 100dvh) {
-  :root { --ch: min(calc(min(320px, 86vw) * 1.397), calc(100dvh - 290px)); }
+  :root { --ch: min(calc(min(280px, 76vw) * 1.397), calc(100dvh - 368px)); }
 }
 
 /* ---------- 한 화면 레이아웃 ---------- */
@@ -25,21 +25,24 @@ h1 { margin-top: 10px !important; font-size: 18px !important; }
 .actions { margin-top: 10px !important; }
 .actions .btn { padding: 10px 8px; font-size: 14px; }
 
-/* 대화창(왼쪽) + 예/아니오(오른쪽) 나란히 */
-.talk { display: flex; gap: 8px; align-items: stretch; margin-top: 6px !important; }
-.talk .dialog { flex: 1; min-width: 0; margin-top: 0 !important; display: flex; align-items: center; }
+/* 대화창은 한 줄 꽉 차게, 예/아니오는 그 위 오른쪽 (카드와 겹치지 않도록 자리 확보) */
+.talk { position: relative; display: block; padding-top: 92px; margin-top: 4px !important; }
+.talk .dialog { width: 100%; margin-top: 0 !important; display: flex; align-items: center; }
 #dialogText { white-space: nowrap; overflow: hidden; }
 .talk .choice {
-  position: static !important;
-  flex: none;
+  position: absolute !important;
+  right: 0;
+  top: 0;
+  bottom: auto !important;
+  height: 86px;
   min-width: 0 !important;
   justify-content: center;
-  padding: 8px 12px 8px 10px !important;
+  padding: 6px 16px 6px 10px !important;
 }
-.talk .choice .q { font-size: 12px !important; padding: 0 2px 5px !important; margin-bottom: 3px !important; }
-.choice .opts { display: flex; gap: 6px; }
-.choice .opts button { font-size: 15px !important; padding: 3px 4px 3px 20px !important; }
-.choice .opts button::before { top: 6px !important; font-size: 11px !important; }
+.talk .choice .q { font-size: 12px !important; padding: 0 2px 4px !important; margin-bottom: 2px !important; }
+.choice .opts { display: flex; flex-direction: column; }
+.choice .opts button { font-size: 14px !important; padding: 2px 4px 2px 20px !important; }
+.choice .opts button::before { top: 4px !important; font-size: 11px !important; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
   color: var(--ink);
