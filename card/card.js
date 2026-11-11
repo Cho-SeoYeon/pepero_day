@@ -473,9 +473,18 @@
   const choice = $('#choice');
   const choiceOpen = () => !choice.classList.contains('hidden');
   function pickOpt(i) { choice.querySelectorAll('button').forEach((b, k) => b.classList.toggle('on', k === i)); }
-  function showChoice() { if (!arena.classList.contains('revealed')) return; pickOpt(0); choice.classList.remove('hidden'); SFX.click(); }
+  // 대화창 글자가 한 줄에 안 들어가면 글자 크기를 줄여서 맞춤
+  function fitText() {
+    const el = $('#dialogText');
+    let fs = 14;
+    el.style.fontSize = '';
+    while (el.scrollWidth > el.clientWidth && fs > 10) { fs -= 0.5; el.style.fontSize = `${fs}px`; }
+  }
+  window.addEventListener('resize', fitText);
+  function showChoice() { if (!arena.classList.contains('revealed')) return; pickOpt(0); choice.classList.remove('hidden'); fitText(); SFX.click(); }
   function answer(yes) {
     choice.classList.add('hidden');
+    fitText();
     SFX.click();
     if (yes) { reset(); setTimeout(open, 450); }
   }
@@ -486,7 +495,7 @@
   document.addEventListener('keydown', (e) => {
     if (!choiceOpen()) return;
     const cur = choice.querySelector('.on') === choice.querySelectorAll('button')[0] ? 0 : 1;
-    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') { e.preventDefault(); pickOpt(1 - cur); SFX.click(); }
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) { e.preventDefault(); pickOpt(1 - cur); SFX.click(); }
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); answer(cur === 0); }
   });
   // '아니오' 후 대화창을 누르면 다시 물어봄
@@ -504,6 +513,7 @@
     typing = setInterval(() => {
       i++;
       el.textContent = text.slice(0, i);
+      fitText();
       if (i % 3 === 0 && text[i - 1] !== ' ') beep([[1200, 0, 0.025, 'square', 0.02]]);
       if (i >= text.length) { clearInterval(typing); typing = null; $('#caret').classList.add('show'); if (done) done(); }
     }, 40);
