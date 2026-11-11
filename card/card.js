@@ -322,29 +322,40 @@
   };
   const spriteSVG = (id, x, y, w, h) => {
     const [sx, sy, sw, sh] = SPRITE[id];
-    return `<svg x="${x}" y="${y}" width="${w}" height="${h}" viewBox="${sx} ${sy} ${sw} ${sh}" preserveAspectRatio="xMidYMid meet"><image href="img/peperos.png" width="399" height="501"/></svg>`;
+    return `<svg x="${x}" y="${y}" width="${w}" height="${h}" viewBox="${sx} ${sy} ${sw} ${sh}" preserveAspectRatio="xMidYMid meet"><image href="img/peperos.png" width="399" height="501" style="mix-blend-mode:multiply"/></svg>`;
   };
+  // 나무위키에서 받은 고화질 이미지가 있는 제품 (img/p/{id}.webp)
+  // [원본 w, h, 여백 잘라낸 x, y, w, h]
+  const HIRES = {
+    1: [441, 706, 31, 34, 368, 649], 2: [720, 720, 189, 55, 339, 601], 3: [400, 400, 103, 34, 186, 325],
+    5: [406, 600, 47, 68, 290, 495], 7: [370, 612, 0, 0, 370, 612], 9: [300, 300, 82, 32, 133, 236],
+    11: [360, 360, 70, 0, 215, 360], 12: [1000, 1299, 0, 0, 1000, 1299], 13: [300, 300, 82, 32, 133, 236],
+    14: [500, 500, 157, 113, 187, 274], 15: [294, 377, 0, 0, 294, 377], 16: [325, 600, 0, 0, 325, 600],
+    17: [360, 360, 75, 1, 210, 359], 18: [300, 300, 82, 32, 133, 236], 19: [185, 175, 43, 0, 99, 174],
+    20: [550, 550, 128, 12, 298, 529],
+  };
+  const productSVG = (id, x, y, w, h) => {
+    const c = HIRES[id];
+    if (!c) return spriteSVG(id, x, y, w, h);
+    return `<svg x="${x}" y="${y}" width="${w}" height="${h}" viewBox="${c[2]} ${c[3]} ${c[4]} ${c[5]}" preserveAspectRatio="xMidYMid meet"><image href="img/p/${id}.webp" width="${c[0]}" height="${c[1]}" style="mix-blend-mode:multiply"/></svg>`;
+  };
+  Object.keys(HIRES).forEach((id) => { new Image().src = `img/p/${id}.webp`; }); // 미리 불러오기
 
   function artSVG(p) {
     const T = TYPES[p.type];
     const id = `a${p.id}`;
-    let s = `<svg viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg" aria-label="${p.name} 빼빼로 그림">`;
-    s += `<defs><radialGradient id="${id}" cx="50%" cy="50%" r="70%"><stop offset="0" stop-color="${T.l}"/><stop offset=".55" stop-color="${T.c}"/><stop offset="1" stop-color="${T.t2}"/></radialGradient>
-      <clipPath id="${id}c"><rect width="300" height="180"/></clipPath></defs>`;
-    s += `<g clip-path="url(#${id}c)"><rect width="300" height="180" fill="url(#${id})"/>`;
+    let s = `<svg viewBox="0 0 300 230" xmlns="http://www.w3.org/2000/svg" aria-label="${p.name} 빼빼로 그림">`;
+    s += `<defs><radialGradient id="${id}" cx="50%" cy="50%" r="70%"><stop offset="0" stop-color="#fff"/><stop offset=".35" stop-color="${T.l}"/><stop offset=".75" stop-color="${T.c}"/><stop offset="1" stop-color="${T.t2}"/></radialGradient>
+      <clipPath id="${id}c"><rect width="300" height="230"/></clipPath></defs>`;
+    s += `<g clip-path="url(#${id}c)"><rect width="300" height="230" fill="url(#${id})"/>`;
     for (let i = 0; i < 18; i++) {
       const a = (Math.PI * 2 * i) / 18;
-      s += `<path d="M150 90L${(150 + Math.cos(a - 0.06) * 260).toFixed(0)} ${(90 + Math.sin(a - 0.06) * 260).toFixed(0)}L${(150 + Math.cos(a + 0.06) * 260).toFixed(0)} ${(90 + Math.sin(a + 0.06) * 260).toFixed(0)}Z" fill="#fff" opacity=".22"/>`;
+      s += `<path d="M150 115L${(150 + Math.cos(a - 0.06) * 280).toFixed(0)} ${(115 + Math.sin(a - 0.06) * 280).toFixed(0)}L${(150 + Math.cos(a + 0.06) * 280).toFixed(0)} ${(115 + Math.sin(a + 0.06) * 280).toFixed(0)}Z" fill="#fff" opacity=".22"/>`;
     }
-    // 실제 제품 이미지 (스프라이트에서 잘라서 표시)
-    const [, , bw, bh] = SPRITE[p.id];
-    const k = Math.min(150 / bh, 230 / bw);
-    const w = bw * k, h = bh * k;
-    s += `<g transform="translate(150 92) rotate(-5)">
-      <rect x="${-w / 2 + 5}" y="${-h / 2 + 6}" width="${w}" height="${h}" fill="#000" opacity=".22"/>
-      ${spriteSVG(p.id, -w / 2, -h / 2, w, h)}</g>`;
+    // 실제 제품 이미지 (흰 배경은 multiply로 투명하게)
+    s += productSVG(p.id, 10, 4, 280, 222);
     const star = (x, y, k) => `<path d="M${x} ${y - k}Q${x} ${y} ${x + k} ${y}Q${x} ${y} ${x} ${y + k}Q${x} ${y} ${x - k} ${y}Q${x} ${y} ${x} ${y - k}Z" fill="#fff"/>`;
-    s += star(40, 34, 9) + star(262, 140, 11) + star(254, 30, 6) + star(52, 150, 6);
+    s += star(34, 34, 9) + star(268, 190, 11) + star(262, 30, 6) + star(40, 196, 6);
     return s + '</g></svg>';
   }
 
@@ -402,7 +413,7 @@
     $('#dexGrid').innerHTML = PEPEROS.map((p) => {
       if (!dex.has(p.id)) return `<div class="slot empty">?</div>`;
       const T = TYPES[p.type];
-      return `<div class="slot" style="--t1:${T.t1};--t2:${T.t2};${T.tx ? `--tx:${T.tx}` : ''}"><svg class="mini" viewBox="0 0 40 50">${spriteSVG(p.id, 0, 0, 40, 50)}</svg>${p.name}<span>${RAR[p.r].mark}</span></div>`;
+      return `<div class="slot" style="--t1:${T.t1};--t2:${T.t2};${T.tx ? `--tx:${T.tx}` : ''}"><svg class="mini" viewBox="0 0 40 50">${productSVG(p.id, 0, 0, 40, 50)}</svg>${p.name}<span>${RAR[p.r].mark}</span></div>`;
     }).join('');
   }
 
@@ -418,6 +429,7 @@
     arena.classList.remove('rar-C', 'rar-U', 'rar-R', 'rar-EX');
     arena.classList.add('shaking', `rar-${p.r}`);
     $('#title').textContent = '두구두구...';
+    say(['두구두구두구...']);
     SFX.shake();
     setTimeout(() => {
       arena.classList.remove('shaking');
@@ -434,7 +446,7 @@
       try { localStorage.setItem(DEX_KEY, JSON.stringify([...dex])); } catch (e) { /* 무시 */ }
       renderDex();
       $('#title').textContent = `${p.name} 빼빼로 등장!`;
-      $('#result').innerHTML = `${RAR[p.r].label} 카드를 뽑았어요${isNew ? ' · NEW!' : ''}<small>카드를 기울여 반짝임을 확인해보세요</small>`;
+      say([`${p.name} 빼빼로를 발견했다!`, isNew ? `${RAR[p.r].label} 카드가 도감에 등록되었다!` : `${RAR[p.r].label} 카드를 또 만났다!`]);
       $('#again').disabled = false;
       busy = false;
     }, 3300);
@@ -447,8 +459,25 @@
     $('#tilt').style.cssText = '';
     $('#sparkles').innerHTML = '';
     $('#title').textContent = '볼을 눌러 빼빼로를 뽑아보세요!';
-    $('#result').textContent = '';
+    say(['볼 안에 무언가 들어 있다...', '볼을 눌러서 열어 보자!']);
     $('#again').disabled = true;
+  }
+
+  // 게임 대화창: 한 글자씩 타이핑
+  let typing;
+  function say(lines) {
+    clearInterval(typing);
+    const el = $('#dialogText');
+    const text = lines.join('\n');
+    let i = 0;
+    el.textContent = '';
+    $('#caret').classList.remove('show');
+    typing = setInterval(() => {
+      i++;
+      el.textContent = text.slice(0, i);
+      if (i % 3 === 0 && text[i - 1] !== ' ') beep([[1200, 0, 0.025, 'square', 0.02]]);
+      if (i >= text.length) { clearInterval(typing); $('#caret').classList.add('show'); }
+    }, 40);
   }
 
   // 카드 기울이기 + 홀로그램
@@ -496,6 +525,53 @@
     document.title = `${to}에게 온 빼빼로 카드팩`;
   }
 
+  // ---------- 픽셀 숲길 배경 ----------
+  function tileSVG(map, pal, w) {
+    let s = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${map.length}" shape-rendering="crispEdges">`;
+    map.forEach((row, y) => [...row].forEach((ch, x) => { if (pal[ch]) s += `<rect x="${x}" y="${y}" width="1" height="1" fill="${pal[ch]}"/>`; }));
+    return `url("data:image/svg+xml,${encodeURIComponent(s + '</svg>')}")`;
+  }
+  const TREE = [
+    '....KKKKKKKK....',
+    '..KKGGGGGGGGKK..',
+    '.KGGLLGGGGGGGGK.',
+    '.KGLLGGGGGGDGGK.',
+    'KGGLGGGGGGGDDGGK',
+    'KGGGGGGDGGGGDGGK',
+    'KGGGGGDDGGGGGGGK',
+    'KGDGGGGGGGLGGDGK',
+    'KGDDGGGGGLLGGDGK',
+    '.KGGGGGGGGGGDDK.',
+    '.KGGDGGGGGGGGGK.',
+    '..KKGGGGGGGGKK..',
+    '....KKKBBKKK....',
+    '......KBBK......',
+    '......KBBK......',
+    '.....KKKKKK.....',
+  ];
+  const GRASS = [
+    '................', '..v.v...........', '...v............', '................',
+    '................', '..........v.v...', '...........v....', '................',
+    '................', '....v.v.........', '.....v..........', '................',
+    '.............v.v', '..............v.', '................', '................',
+  ];
+  const PATH = [
+    'e..............................................................e',
+    'e.......o......................o...............................e',
+    'e....................o.......................o.................e',
+    'e..........................................................o...e',
+    'e...o..........o...............................o...............e',
+    'e..................................o...........................e',
+    'e........................o.....................................e',
+    'e.............o......................................o.........e',
+  ];
+  const treeBand = TREE.map((r) => r + r);
+  const bgTree = tileSVG(treeBand, { K: '#1f4a1f', G: '#4ea04a', L: '#8fd46c', D: '#2f7a2f', B: '#7a4f24', '.': '#a6d877' }, 32);
+  const bgGrass = tileSVG(GRASS, { '.': '#a6d877', v: '#79b955' }, 16);
+  const bgPath = tileSVG(PATH, { '.': '#efdfaa', o: '#d6bf7f', e: '#c9ae6a' }, 64);
+  document.body.style.background = `${bgPath} center top / 200px 25px repeat-y, ${bgTree} left top / 80px 40px repeat-y, ${bgTree} right top / 80px 40px repeat-y, ${bgGrass} 0 0 / 40px 40px, #a6d877`;
+
   renderSound();
   renderDex();
+  say(['볼 안에 무언가 들어 있다...', '볼을 눌러서 열어 보자!']);
 })();
